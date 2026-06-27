@@ -7,18 +7,27 @@
 
 -- ─── Enums ───────────────────────────────────────────────────────────────────
 
-create type if not exists public.marketing_campaign_status as enum (
-  'draft', 'planned', 'active', 'paused', 'completed', 'archived'
-);
+do $$ begin
+  create type public.marketing_campaign_status as enum (
+    'draft', 'planned', 'active', 'paused', 'completed', 'archived'
+  );
+exception when duplicate_object then null;
+end $$;
 
-create type if not exists public.marketing_content_status as enum (
-  'idea', 'brief', 'draft', 'review', 'approved', 'scheduled', 'published', 'reported', 'archived'
-);
+do $$ begin
+  create type public.marketing_content_status as enum (
+    'idea', 'brief', 'draft', 'review', 'approved', 'scheduled', 'published', 'reported', 'archived'
+  );
+exception when duplicate_object then null;
+end $$;
 
-create type if not exists public.marketing_channel as enum (
-  'linkedin', 'instagram', 'x', 'tiktok', 'youtube', 'threads',
-  'whatsapp_status', 'whatsapp_channel', 'email', 'blog', 'podcast', 'other'
-);
+do $$ begin
+  create type public.marketing_channel as enum (
+    'linkedin', 'instagram', 'x', 'tiktok', 'youtube', 'threads',
+    'whatsapp_status', 'whatsapp_channel', 'email', 'blog', 'podcast', 'other'
+  );
+exception when duplicate_object then null;
+end $$;
 
 -- ─── Brands ──────────────────────────────────────────────────────────────────
 
