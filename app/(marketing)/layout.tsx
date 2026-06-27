@@ -1,4 +1,4 @@
-import type { ReactNode } from 'next'
+import type { ReactNode } from 'react'
 import Nav from '@/components/layout/Nav'
 import { requireUser } from '@/lib/auth'
 
