@@ -15,6 +15,12 @@ export async function POST(request: NextRequest) {
 
     const redirectTo = `${appUrl}/auth/callback?next=${encodeURIComponent(next ?? '/dashboard')}`
 
+    // Domain restriction — only @wallacemecha.com may sign in
+    if (!email.trim().toLowerCase().endsWith('@wallacemecha.com')) {
+      // Return ok:true intentionally to avoid email enumeration
+      return NextResponse.json({ ok: true })
+    }
+
     const { data, error } = await admin.auth.admin.generateLink({
       type: 'magiclink',
       email: email.trim().toLowerCase(),

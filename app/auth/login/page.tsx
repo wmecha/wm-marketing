@@ -59,7 +59,7 @@ function LoginForm() {
               autoFocus
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="your@wallacemecha.com"
+              placeholder="you@wallacemecha.com"
               className="rounded-lg border border-white/[0.1] bg-white/[0.05] px-4 py-2.5 text-sm outline-none placeholder:text-white/30 focus:border-[#C9A84C]/50"
             />
             {error && <p className="text-xs text-red-400">{error}</p>}
