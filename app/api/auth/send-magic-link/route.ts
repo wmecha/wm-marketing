@@ -4,7 +4,7 @@ import { Resend } from 'resend'
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, next } = await request.json() as { email: string; next?: string }
+    const { email } = await request.json() as { email: string }
     if (!email) return NextResponse.json({ error: 'Email required' }, { status: 400 })
 
     const normalised  = email.trim().toLowerCase()
@@ -12,7 +12,6 @@ export async function POST(request: NextRequest) {
     const serviceKey  = process.env.SUPABASE_SERVICE_ROLE_KEY ?? ''
     const resendKey   = process.env.RESEND_API_KEY ?? ''
     const appUrl      = process.env.NEXT_PUBLIC_APP_URL ?? 'https://marketing.wallacemecha.com'
-    const redirectTo  = `${appUrl}/auth/confirm`
 
     if (!serviceKey) { console.error('[marketing/send-magic-link] SUPABASE_SERVICE_ROLE_KEY not set'); return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 }) }
     if (!resendKey)  { console.error('[marketing/send-magic-link] RESEND_API_KEY not set');            return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 }) }
@@ -24,7 +23,7 @@ export async function POST(request: NextRequest) {
     const { data, error } = await admin.auth.admin.generateLink({
       type: 'magiclink',
       email: normalised,
-      options: { redirectTo },
+      options: { redirectTo: appUrl },
     })
 
     if (error) {
@@ -32,12 +31,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: true })
     }
 
+    const otp  = data.properties.email_otp
+    const link = `${appUrl}/api/auth/magic?t=${encodeURIComponent(otp)}&e=${encodeURIComponent(normalised)}`
+
     const resend = new Resend(resendKey)
     const { error: sendError } = await resend.emails.send({
       from:    'WM & Co <wmco@operations.wallacemecha.com>',
       to:      normalised,
       subject: 'Sign in to Marketing Hub',
-      html:    magicLinkEmail('Marketing Hub', 'marketing.wallacemecha.com', data.properties.action_link),
+      html:    magicLinkEmail('Marketing Hub', 'marketing.wallacemecha.com', link),
     })
 
     if (sendError) console.error('[marketing/send-magic-link] Resend error:', sendError.message)
