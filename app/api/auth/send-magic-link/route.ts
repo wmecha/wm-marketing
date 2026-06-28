@@ -2,38 +2,49 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { sendMagicLink } from '@/lib/email'
 
+// ── How this will evolve ──────────────────────────────────────────────────────
+// Current (phase 1): generateLink returns the URL → we send via Resend SDK.
+// Target (phase 2):  Once SMTP_PASS is set in Supabase (Resend key), replace
+//                    generateLink + sendMagicLink with signInWithOtp() and
+//                    Supabase delivers the branded email itself — no SDK needed.
+// The branded template is already live in Supabase (set 2026-06-28).
+// ─────────────────────────────────────────────────────────────────────────────
+
 export async function POST(request: NextRequest) {
   try {
     const { email, next } = await request.json() as { email: string; next?: string }
     if (!email) return NextResponse.json({ error: 'Email required' }, { status: 400 })
 
+    const normalised = email.trim().toLowerCase()
+
+    // Domain restriction — silently no-op to avoid email enumeration
+    if (!normalised.endsWith('@wallacemecha.com')) {
+      return NextResponse.json({ ok: true })
+    }
+
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL ?? ''
     const serviceKey  = process.env.SUPABASE_SERVICE_ROLE_KEY ?? ''
     const appUrl      = process.env.NEXT_PUBLIC_APP_URL ?? 'https://marketing.wallacemecha.com'
 
-    const admin = createClient(supabaseUrl, serviceKey, { auth: { autoRefreshToken: false, persistSession: false } })
+    const admin = createClient(supabaseUrl, serviceKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    })
 
     const redirectTo = `${appUrl}/auth/callback?next=${encodeURIComponent(next ?? '/dashboard')}`
 
-    // Domain restriction — only @wallacemecha.com may sign in
-    if (!email.trim().toLowerCase().endsWith('@wallacemecha.com')) {
-      // Return ok:true intentionally to avoid email enumeration
-      return NextResponse.json({ ok: true })
-    }
-
     const { data, error } = await admin.auth.admin.generateLink({
       type: 'magiclink',
-      email: email.trim().toLowerCase(),
+      email: normalised,
       options: { redirectTo },
     })
 
     if (error) {
       console.error('[send-magic-link]', error.message)
-      return NextResponse.json({ ok: true })
+      return NextResponse.json({ ok: true }) // don't leak error details
     }
 
     await sendMagicLink({
-      to:        email.trim().toLowerCase(),
+      to:        normalised,
       magicLink: data.properties.action_link,
       appName:   'Marketing Hub',
       appUrl:    'marketing.wallacemecha.com',
