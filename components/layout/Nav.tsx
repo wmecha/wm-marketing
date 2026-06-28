@@ -16,12 +16,22 @@ const NAV = [
 export default function Nav() {
   const path = usePathname()
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.07] bg-[#111111]/90 backdrop-blur">
-      <div className="mx-auto flex max-w-7xl items-center gap-6 px-6 py-4">
-        <Link href="/dashboard" className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#C9A84C]">
-          WM Marketing
+    <header style={{
+      position: 'fixed', inset: '0 0 auto 0', zIndex: 50,
+      borderBottom: '1px solid var(--wm-border-faint)',
+      background: 'rgba(17,17,17,0.92)',
+      backdropFilter: 'blur(12px)',
+    }}>
+      <div style={{ maxWidth: 1152, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 24, padding: '0 24px', height: 52 }}>
+        <Link href="/dashboard" style={{ display: 'flex', flexDirection: 'column', gap: 1, textDecoration: 'none', flexShrink: 0 }}>
+          <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.28em', textTransform: 'uppercase', color: 'var(--wm-text-eyebrow)' }}>
+            WM &amp; Co
+          </span>
+          <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--wm-gold)' }}>
+            Marketing Hub
+          </span>
         </Link>
-        <nav className="flex flex-wrap gap-1">
+        <nav style={{ display: 'flex', flexWrap: 'wrap', gap: 2, flex: 1 }}>
           {NAV.map((item) => {
             const active = path === item.href || path.startsWith(item.href + '/')
             return (
@@ -32,7 +42,7 @@ export default function Nav() {
                   'rounded px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.15em] transition-colors',
                   active
                     ? 'bg-[#C9A84C]/10 text-[#C9A84C]'
-                    : 'text-white/50 hover:text-white/80'
+                    : 'text-white/40 hover:text-white/70'
                 )}
               >
                 {item.label}

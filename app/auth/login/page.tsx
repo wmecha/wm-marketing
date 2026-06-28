@@ -32,27 +32,46 @@ function LoginForm() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#111111]">
-      <div className="w-full max-w-sm rounded-xl border border-white/[0.07] bg-white/[0.03] p-8">
-        <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#C9A84C]">WM &amp; Co</p>
-        <h1 className="mt-2 text-xl font-bold">Marketing Hub</h1>
+    <div style={{
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      minHeight: '100vh', background: 'var(--wm-bg-primary)', padding: 24,
+    }}>
+      <div style={{
+        background: 'var(--wm-bg-secondary)',
+        border: '1px solid var(--wm-border)',
+        borderRadius: 10, padding: '48px 40px', width: '100%', maxWidth: 400,
+      }}>
+        <div style={{ textAlign: 'center', marginBottom: 36 }}>
+          <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.28em', textTransform: 'uppercase', color: 'var(--wm-text-eyebrow)', marginBottom: 6 }}>
+            WM &amp; Co
+          </div>
+          <div style={{ fontSize: 26, fontWeight: 700, color: 'var(--wm-gold)', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
+            Marketing Hub
+          </div>
+          <div style={{ fontSize: 11, color: 'var(--wm-text-muted)', marginTop: 6 }}>
+            marketing.wallacemecha.com
+          </div>
+        </div>
 
         {sent ? (
-          <div className="mt-6">
-            <p className="text-sm text-white/80 font-medium">Check your email</p>
-            <p className="mt-2 text-sm text-white/50 leading-relaxed">
-              A sign-in link has been sent to <strong className="text-white/70">{email}</strong>.
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: 28, marginBottom: 16 }}>✉</div>
+            <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--wm-text-primary)', marginBottom: 8 }}>
+              Check your email
+            </div>
+            <div style={{ fontSize: 12, color: 'var(--wm-text-muted)', lineHeight: 1.6 }}>
+              A sign-in link has been sent to <strong style={{ color: 'var(--wm-text-secondary)' }}>{email}</strong>.<br />
               Click the link to access Marketing Hub. It expires in 1 hour.
-            </p>
+            </div>
             <button
               onClick={() => { setSent(false); setEmail('') }}
-              className="mt-5 text-[11px] text-white/30 underline underline-offset-2"
+              style={{ marginTop: 24, fontSize: 11, color: 'var(--wm-text-faint)', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
             >
               Use a different email
             </button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             <input
               type="email"
               required
@@ -60,20 +79,46 @@ function LoginForm() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@wallacemecha.com"
-              className="rounded-lg border border-white/[0.1] bg-white/[0.05] px-4 py-2.5 text-sm outline-none placeholder:text-white/30 focus:border-[#C9A84C]/50"
+              style={{
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid var(--wm-border)',
+                borderRadius: 6, color: 'var(--wm-text-primary)',
+                fontSize: 14, padding: '10px 14px', width: '100%',
+                outline: 'none', fontFamily: 'inherit',
+              }}
+              onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--wm-border-gold-strong)' }}
+              onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--wm-border)' }}
             />
-            {error && <p className="text-xs text-red-400">{error}</p>}
+
+            {error && (
+              <div style={{
+                padding: '10px 14px', background: 'rgba(208,138,133,0.1)',
+                border: '1px solid var(--wm-status-error)', borderRadius: 6,
+                color: 'var(--wm-status-error)', fontSize: 12,
+              }}>
+                {error}
+              </div>
+            )}
+
             <button
               type="submit"
               disabled={sending}
-              className="rounded-lg bg-[#C9A84C] px-4 py-2.5 text-sm font-semibold text-black transition-opacity hover:opacity-90 disabled:opacity-50"
+              style={{
+                width: '100%', padding: '12px 20px',
+                background: sending ? 'var(--wm-bg-card)' : 'var(--wm-gold)',
+                border: 'none', borderRadius: 6,
+                color: sending ? 'var(--wm-text-muted)' : 'var(--wm-text-on-gold)',
+                fontSize: 14, fontWeight: 600, cursor: sending ? 'wait' : 'pointer',
+                transition: 'background var(--wm-dur-quick)',
+                fontFamily: 'inherit',
+              }}
             >
-              {sending ? 'Sending…' : 'Send sign-in link'}
+              {sending ? 'Sending link…' : 'Send sign-in link'}
             </button>
           </form>
         )}
 
-        <p className="mt-6 text-[11px] text-white/25 text-center">
+        <p style={{ marginTop: 24, fontSize: 11, color: 'var(--wm-text-faint)', textAlign: 'center' }}>
           Access restricted to authorised Cognexa team members
         </p>
       </div>

@@ -1,20 +1,88 @@
 @import "tailwindcss";
 
+/* =============================================================================
+   WM & Co — Design Tokens (mirrored from wallacemecha/app/globals.css)
+   ============================================================================= */
 :root {
-  --gold: #C9A84C;
-  --gold-dim: #a88a3a;
-  --bg: #111111;
-  --surface: #1a1a1a;
-  --border: rgba(255,255,255,0.08);
-  --text-muted: rgba(255,255,255,0.45);
+  /* Surfaces */
+  --wm-bg-primary:        #111111;
+  --wm-bg-secondary:      #1A1A1A;
+  --wm-bg-elevated:       #161616;
+  --wm-bg-card:           #2C2C2C;
+  --wm-bg-deep:           #0A0A0A;
+  --wm-bg-gold-wash:      #1E1A12;
+
+  /* Borders */
+  --wm-border-faint:      rgba(255,255,255,0.06);
+  --wm-border:            rgba(255,255,255,0.10);
+  --wm-border-strong:     rgba(255,255,255,0.20);
+  --wm-border-gold:       rgba(201,168,76,0.25);
+  --wm-border-gold-strong:rgba(201,168,76,0.60);
+  --wm-hairline:          #2A2A2A;
+
+  /* Text */
+  --wm-text-primary:      #F8F6F2;
+  --wm-text-secondary:    rgba(248,246,242,0.65);
+  --wm-text-muted:        #9A9A9A;
+  --wm-text-faint:        #777777;
+  --wm-text-eyebrow:      rgba(255,255,255,0.20);
+  --wm-text-on-gold:      #111111;
+
+  /* Gold */
+  --wm-gold:              #C9A84C;
+  --wm-gold-hover:        #B8943D;
+  --wm-gold-dark:         #8B6914;
+  --wm-gold-tint-10:      rgba(201,168,76,0.10);
+  --wm-gold-tint-20:      rgba(201,168,76,0.20);
+  --wm-gold-tint-30:      rgba(201,168,76,0.30);
+
+  /* Status */
+  --wm-status-success:    #6AA77A;
+  --wm-status-warning:    #D4A24A;
+  --wm-status-error:      #D08A85;
+  --wm-status-info:       #7FA0B8;
+  --wm-status-pending:    rgba(248,246,242,0.45);
+
+  /* Typography */
+  --wm-font-sans:  var(--font-ibm-sans), "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  --wm-font-serif: var(--font-instrument), "Instrument Serif", Georgia, serif;
+  --wm-font-mono:  var(--font-ibm-mono), "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --wm-fs-h1:      clamp(28px, 4vw, 48px);
+  --wm-fs-h2:      clamp(22px, 3vw, 36px);
+  --wm-fs-h3:      22px;
+  --wm-fs-body:    16px;
+  --wm-fs-small:   14px;
+  --wm-fs-meta:    12px;
+  --wm-fs-eyebrow: 11px;
+
+  --wm-tr-eyebrow: 0.20em;
+  --wm-tr-spec:    0.30em;
+
+  --wm-shadow-card:  0 1px 0 rgba(255,255,255,0.02) inset, 0 20px 60px -30px rgba(0,0,0,0.8);
+  --wm-glow-gold:    0 0 0 1px rgba(201,168,76,0.35), 0 0 40px -8px rgba(201,168,76,0.35);
+
+  --wm-ease-soft:   cubic-bezier(0.4, 0, 0.2, 1);
+  --wm-dur-base:    300ms;
+  --wm-dur-quick:   180ms;
+
+  /* Legacy aliases — kept so existing .mk-* classes keep working */
+  --gold:       var(--wm-gold);
+  --gold-dim:   var(--wm-gold-hover);
+  --bg:         var(--wm-bg-primary);
+  --surface:    var(--wm-bg-secondary);
+  --border:     var(--wm-border);
+  --text-muted: var(--wm-text-muted);
+  --text:       var(--wm-text-primary);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  background: var(--bg);
-  color: white;
-  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--wm-bg-primary);
+  color: var(--wm-text-primary);
+  font-family: var(--wm-font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
 a { color: inherit; text-decoration: none; }
