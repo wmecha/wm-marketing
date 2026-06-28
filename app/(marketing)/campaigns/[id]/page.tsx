@@ -3,9 +3,12 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { StatusBadge } from '@/components/marketing/StatusBadge'
 import { EmptyState } from '@/components/marketing/EmptyState'
+import { TaskOpsCard } from '@/components/marketing/TaskOpsCard'
 import { requireUser } from '@/lib/auth'
 import { getCampaign, getCampaignContentCount } from '@/lib/marketing/campaigns'
 import { listContentItems } from '@/lib/marketing/content-items'
+import { getTaskLinksForEntity } from '@/lib/marketing/task-links'
+import { sendCampaignToTask, refreshCampaignTaskStatus } from './task-actions'
 
 export const dynamic = 'force-dynamic'
 
@@ -29,9 +32,10 @@ export default async function CampaignDetailPage({ params }: Props) {
   const { data: campaign, error } = await getCampaign(id)
   if (!campaign || error) notFound()
 
-  const [contentCount, { data: contentItems }] = await Promise.all([
+  const [contentCount, { data: contentItems }, taskLinks] = await Promise.all([
     getCampaignContentCount(id),
     listContentItems({ campaignId: id, limit: 10 }),
+    getTaskLinksForEntity('campaign', id),
   ])
 
   const brand = (campaign as unknown as { marketing_brands?: { name: string } | null }).marketing_brands
@@ -151,10 +155,13 @@ export default async function CampaignDetailPage({ params }: Props) {
             <p className="mk-muted">Budget reference will be available after campaign is linked to a Finance campaign profile.</p>
           </div>
 
-          <div className="mk-sidebar-card mk-future-card">
-            <h3>Task Ops</h3>
-            <p className="mk-muted">Project reference available after INT-M1 ships.</p>
-          </div>
+          <TaskOpsCard
+            links={taskLinks}
+            canSend={!!campaign.venture_code}
+            taskOpsBaseUrl={process.env.NEXT_PUBLIC_TASK_OPS_URL ?? ''}
+            onSend={() => sendCampaignToTask(id)}
+            onRefresh={(linkId, taskId) => refreshCampaignTaskStatus(linkId, taskId, id)}
+          />
         </aside>
       </div>
     </div>

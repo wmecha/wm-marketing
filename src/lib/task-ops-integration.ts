@@ -3,9 +3,13 @@
 // Task Ops is the authoritative source for task status and artifacts.
 // Marketing stores only the external reference (task_ops_task_id) and a cached display status.
 // This module never posts journals or calls wm-finance directly.
+// server-only: the API key must never be bundled in the browser.
+import "server-only";
 
 const TASK_OPS_BASE_URL = process.env.TASK_OPS_BASE_URL ?? "";
-const TASK_OPS_API_KEY = process.env.TASK_OPS_API_KEY ?? "";
+// MARKETING_TASK_OPS_API_KEY matches the MARKETING_TASK_OPS_API_KEY var in wm-task-ops.
+// Named distinctly so it cannot be confused with any user-facing key.
+const TASK_OPS_API_KEY = process.env.MARKETING_TASK_OPS_API_KEY ?? "";
 
 export type MarketingEntityType =
   | "campaign"
@@ -55,6 +59,7 @@ export type CreateTaskResponse = {
   taskStatus: string;
   projectReference: string | null;
   executionEligible: boolean;
+  idempotent?: boolean;
 };
 
 export type TaskStatusResponse = {

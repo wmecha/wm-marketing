@@ -2,8 +2,11 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { StatusBadge } from '@/components/marketing/StatusBadge'
+import { TaskOpsCard } from '@/components/marketing/TaskOpsCard'
 import { requireUser } from '@/lib/auth'
 import { getContentItem } from '@/lib/marketing/content-items'
+import { getTaskLinksForEntity } from '@/lib/marketing/task-links'
+import { sendContentToTask, refreshContentTaskStatus } from './task-actions'
 
 export const dynamic = 'force-dynamic'
 
@@ -19,7 +22,10 @@ export default async function ContentDetailPage({ params }: Props) {
   const { id } = await params
   await requireUser()
 
-  const { data: item, error } = await getContentItem(id)
+  const [{ data: item, error }, taskLinks] = await Promise.all([
+    getContentItem(id),
+    getTaskLinksForEntity('content_item', id),
+  ])
   if (!item || error) notFound()
 
   const brand = (item as unknown as { marketing_brands?: { name: string } | null }).marketing_brands
@@ -158,26 +164,13 @@ export default async function ContentDetailPage({ params }: Props) {
             </dl>
           </div>
 
-          {item.task_ops_task_id ? (
-            <div className="mk-sidebar-card">
-              <h3>Task Ops</h3>
-              <dl className="mk-def-list">
-                <dt>Task ID</dt>
-                <dd><code>{item.task_ops_task_id}</code></dd>
-                {item.task_ops_status && (
-                  <>
-                    <dt>Status</dt>
-                    <dd>{item.task_ops_status}</dd>
-                  </>
-                )}
-              </dl>
-            </div>
-          ) : (
-            <div className="mk-sidebar-card mk-future-card">
-              <h3>Task Ops</h3>
-              <p className="mk-muted">Task Ops reference available after INT-M1 ships.</p>
-            </div>
-          )}
+          <TaskOpsCard
+            links={taskLinks}
+            canSend={true}
+            taskOpsBaseUrl={process.env.NEXT_PUBLIC_TASK_OPS_URL ?? ''}
+            onSend={() => sendContentToTask(id)}
+            onRefresh={(linkId, taskId) => refreshContentTaskStatus(linkId, taskId, id)}
+          />
         </aside>
       </div>
     </div>

@@ -723,3 +723,63 @@ a.mk-agenda-title:hover {
     grid-template-columns: 50px 1fr;
   }
 }
+
+/* ── Task Ops card (INT-M1) ──────────────────────────────────────────────────── */
+
+.mk-task-link-list {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mk-task-link-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.mk-task-link-id {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.mk-task-link-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mk-btn-ghost-xs {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+.mk-btn-ghost-xs:hover:not(:disabled) {
+  color: var(--text);
+  background: var(--surface-hover);
+}
+
+.mk-btn-ghost-xs:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.mk-task-feedback {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+.mt-2 {
+  margin-top: 8px;
+}
